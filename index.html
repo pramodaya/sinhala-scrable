@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>	
+
+	<title>සිංහල වචන හදමු</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<style type="text/css" media="all">.cnotie {display: block}</style> <!--<![endif]-->
+	<style type="text/css" src="css/main.css"></style>
+</head>
+<body id="body">
+
+	<audio id="audio0" src="audio/20258__Koops__Page_Turn_24.wav" preload="auto" type="audio/wav"></audio>
+	<audio id="audio1" src="audio/1257__Anton__hit_on_wood.wav" preload="auto" type="audio/wav"></audio>
+	<audio id="audio2" src="audio/1258__Anton__hit_on_wood2.wav" preload="auto" type="audio/wav"></audio>
+	<audio id="audio3" src="audio/37161__volivieri__soccer_stomp_01.wav" preload="auto" type="audio/wav"></audio>
+	<audio id="audio4" src="audio/54405__KorgMS2000B__Button_Click.wav" preload="auto" type="audio/wav"></audio>
+	<audio id="audio5" src="audio/32435__HardPCM__Wood012.wav" preload="auto" type="audio/wav"></audio>
+
+
+<div id="title">
+<span>සිංහල වචන හදමු</span>
+
+</div>
+
+
+
+
+
+<div>
+	<div>
+	
+
+		<label id="scoreLabel">
+			<b>පළමු ක්‍රිීඩකයා</b></label>
+		<b><span id="p1Score" class="score"> 0 </span></b>
+		<button class="btn btn1" id="p1AddBtn">+</button>
+		 <button class="btn btn1" id="p1MinBtn">-</button>
+
+		 &nbsp;&nbsp;
+
+		<label id="scoreLabel"><b>දෙවැනි ක්‍රිීඩකයා</b></label>
+		<b><span id="p2Score" class="score"> 0</span></b>
+		<button class="btn btn2" id="p2AddBtn"> + </button>
+		 <button class="btn btn2" id="p2MinBtn"> - </button>
+	</div>
+</div>
+
+<div>
+	
+</div>
+
+
+
+<div class="tableDivWrap">
+		<div>
+			<input type="submit" onclick="placeRandomTiles_Rack();" value="නව අකුරු"  class="btn newLetterBtn"></input>
+		</div>
+		
+		<div id="rack" ></div>
+</div>
+
+<div id="board" class="tableDivWrap surroundShade"></div>
+
+
+
+<script type="text/javascript" src="javascript/score.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- scripts -->
+<style type="text/css" media="all">
+		@import "css/main.css";
+	</style>
+
+	<script type="text/javascript" src="javascript/jquery-1.4.3.min.js"></script>
+	
+	
+	<script src="javascript/jquery.blockUI.js" type="text/javascript"></script>
+	
+	<script src="javascript/jquery-css-transform.js" type="text/javascript"></script>
+	<script src="javascript/jquery-animate-css-rotate-scale.js" type="text/javascript"></script>
+	<script src="javascript/rotate3Di.js" type="text/javascript"></script>
+	
+	<script type="text/javascript" src="javascript/jquery-ui-1.8.7.custom.min.js"></script>
+	
+	
+	<script type="text/javascript" src="javascript/BinFileReader.js"></script>	
+	
+	<!-- <script>var _sf_startpt=(new Date()).getTime()</script> -->
+	
+	<script type="text/javascript" src="javascript/main.js"></script>
+	
+	
+	<script type="text/javascript">
+	
+	var game = 0;
+	var board = 0;
+	var rack = 0;
+	var boardUI = 0;
+
+	function playAction_resetTilesOnRack()
+	{
+		boardUI.SetCurrentlySelectedSquareUpdateTargets(0);
+		//boardUI.CurrentlySelectedSquare = 0;
+	
+		rack.TakeTilesBack();
+	}
+	
+	function playAction_submitWords()
+	{}
+	
+	function playAction_drawNewTiles()
+	{
+		boardUI.SetCurrentlySelectedSquareUpdateTargets(0);
+				
+		rack.GenerateRandomTiles();
+	}
+	
+	function playAction_passTurn()
+	{
+		if (!confirm("Are you sure you want to pass your turn ?"))
+		{
+			return;
+		}
+		
+		
+	}
+	
+	function resetTextField()
+	{
+		$("#text_field").val("");
+	}
+	
+	function findAnagrams()
+	{
+		var text = $("#text_field").val();
+		var anagrams = game.Dictionary.FindAnagrams(text);
+		if (anagrams.length == 1)
+		{
+			alert("Error: the characters [" + anagrams[0] + "] do not return any anagrams from the \"" + game.Language + "\" dictionary.");
+		}
+		else
+		{
+			
+			
+			$('#anagrams').html('<p><input type="button" value="Clear Anagrams" onclick="$(\'#anagrams\').html(\'\');"></input></p>');
+			
+			
+			
+			var wordsByLength = [];
+			for (var i = 0; i < game.Dictionary.MaxWordLength; i++)
+			{
+				wordsByLength.push([]);
+			}
+			
+			for (var i = 1; i < anagrams.length; i++)
+			{
+				var word = anagrams[i];
+				wordsByLength[word.length].push(word);
+			}
+			
+			var charInput = anagrams[0];
+			
+			var table = "<table>";
+			
+			for (var i = game.Dictionary.MaxWordLength - 1; i >= 2 ; i--)
+			{
+				var words = wordsByLength[i];
+				
+				if (words.length <= 0) continue;
+				
+				table += "<tr>";
+				
+				if (charInput.length == i)
+				{
+					table += "<th>[" + i + "]</th>";
+				}
+				else
+				{
+					table += "<th>" + i + "</th>";
+				}
+				
+				table += "<td>";
+				
+				for (var j = 0; j < words.length; j++)
+				{
+					var word = words[j];
+					table += word;
+					if (j < (words.length - 1))
+					{
+						table += " - ";
+					}
+				}
+				
+				table += "</td>";
+				table += "<tr>";
+			}
+			
+			table += "</table>";
+			
+			$('#anagrams').append(table);
+		}
+	}
+	
+	function checkWord()
+	{
+		var text = $("#text_field").val();
+		var ok = game.Dictionary.CheckWord(text);
+		if (ok)
+		{
+			alert("Success: [" + text + "] is in the \"" + game.Language + "\" dictionary.");
+		}
+		else
+		{
+			alert("Error: [" + text + "] is not in the \"" + game.Language + "\" dictionary.");
+		}
+	}
+	
+	function verifyBoard()
+	{
+		boardUI.CleanupErrorLayer();
+		
+		var valid = board.CheckDictionary();
+
+		if (!valid)
+		{
+			Scrabble.UI.Html.prototype.OnUnblockUIFunction = function() { boardUI.CleanupErrorLayer(); };
+			
+			$.blockUI({
+				message: "<p>Invalid words or tile placement !</p><input type=\"submit\" value=\"Return\" onclick=\"boardUI.UnblockUIFunction();\"></input>",
+				focusInput: true,
+				bindEvents: true,
+				constrainTabKey: true,
+				fadeIn: 0,
+				fadeOut: 0,
+				showOverlay: true,
+				centerY: true,
+				css: { position: "absolute", padding: "1em", backgroundColor: "black", color: "white", width: "100%", left: 0, top: $("#rack").offset().top, border: "none", textAlign: "center" },
+				overlayCSS: { backgroundColor: '#FFFFFF', opacity: 0.2 },
+				onBlock: function()
+				{
+					//console.log("modal activated");
+				}
+			}); 
+
+			$('.blockOverlay').attr('title','Click to return to the game');
+			$('.blockOverlay').click(
+				boardUI.UnblockUIFunction
+			);
+		}
+		else
+		{
+			setTimeout(function()
+			{
+				boardUI.CleanupErrorLayer(); 
+			}, 1000);
+		}
+
+		
+	}
+	
+	function emptyBoardAndRack()
+	{
+		boardUI.SetCurrentlySelectedSquareUpdateTargets(0);
+		
+		
+		board.EmptyTiles();
+		rack.EmptyTiles();
+	}
+	
+	function replenishRack()
+	{
+		boardUI.SetCurrentlySelectedSquareUpdateTargets(0);
+		//boardUI.CurrentlySelectedSquare = 0;
+		
+		rack.ReplenishRandomTiles();
+	}
+	
+	function placeRandomTiles_Rack()
+	{
+		boardUI.SetCurrentlySelectedSquareUpdateTargets(0);
+		//boardUI.CurrentlySelectedSquare = 0;
+		
+		rack.GenerateRandomTiles();
+	}
+	
+	function placeRandomTiles_Board()
+	{
+		boardUI.SetCurrentlySelectedSquareUpdateTargets(0);
+		//boardUI.CurrentlySelectedSquare = 0;
+		
+		board.GenerateRandomTiles();
+	}
+	
+	function setLanguage(lang)
+	{
+		game.SetLanguage(lang);
+	}
+	
+	function placeTileSet()
+	{
+		boardUI.SetCurrentlySelectedSquareUpdateTargets(0);
+		//boardUI.CurrentlySelectedSquare = 0;
+		
+		board.GenerateTilesLetterDistribution();
+		//rack.GenerateRandomTiles();
+	}
+
+	function init() {
+
+		// quit if this function has already been called
+		if (arguments.callee.done) return;
+
+		// flag this function so we don't do the same thing twice
+		arguments.callee.done = true;
+		
+		boardUI = new window.Scrabble.UI.Html(); // must be instantiated first (to listen to Core events)
+
+		board = new window.Scrabble.Core.Board();
+		rack = new window.Scrabble.Core.Rack();
+
+		game = new window.Scrabble.Core.Game(board, rack);
+		
+		
+		
+		$(document).ready(function(){
+			
+	
+
+
+			var obj = $("#title");
+
+
+			obj.rotate3Di(360, 1000,
+			        {
+			            sideChange: function(front) {
+						    if (front) {
+						        //
+						    } else {
+			
+						    }
+						}
+						,
+			            complete: function() {
+						    //
+						}
+			        }
+			    );
+
+		
+		   });
+
+	};
+
+	/* for Mozilla */
+	if (document.addEventListener) {
+		document.addEventListener("DOMContentLoaded", init, false);
+	}
+
+	
+	window.onload = init;
+	</script>
+
+
+
+</body>
+</html>
